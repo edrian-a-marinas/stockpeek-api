@@ -89,6 +89,21 @@ DATABASES = {"default": dj_database_url.parse(os.getenv("DATABASE_URL"), conn_ma
 
 AUTH_USER_MODEL = "accounts.User"
 
+# Redis cache (used by django-ratelimit)
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.getenv("REDIS_CACHE_URL"),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    },
+}
+
+# Rate limiting
+RATELIMIT_ENABLED = os.getenv("RATELIMIT_ENABLED", "True") == "True"
+RATELIMIT_USE_CACHE = "default"
+
 # LOGGER CONFIG
 
 LOGGING = {
