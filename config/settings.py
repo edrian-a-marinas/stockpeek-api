@@ -94,9 +94,15 @@ AUTH_USER_MODEL = "accounts.User"
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
+    "formatters": {
+        "simple": {
+            "format": "%(levelname)s:     %(name)s - %(message)s",
+        },
+    },
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
+            "formatter": "simple",
         },
     },
     "root": {
@@ -104,6 +110,15 @@ LOGGING = {
         "level": "INFO",
     },
 }
+
+# Startup logging (runs once on server boot, skips autoreloader's parent process)
+import os
+
+if os.environ.get("RUN_MAIN") == "true":
+    from config.logging import log_startup
+
+    log_startup()
+
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
