@@ -17,3 +17,7 @@ class AddWatchlistItemSerializer(serializers.Serializer):
 
     def validate_stock_symbol(self, value):
         return value.upper().strip()
+
+
+class StockNoteSerializer(serializers.Serializer):
+    note_text = serializers.CharField(allow_blank=True, max_length=1000)

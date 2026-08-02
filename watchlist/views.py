@@ -1,8 +1,8 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import AddWatchlistItemSerializer, WatchlistItemSerializer
-from .services import add_to_watchlist, list_watchlist, remove_from_watchlist
+from .serializers import AddWatchlistItemSerializer, StockNoteSerializer, WatchlistItemSerializer
+from .services import add_to_watchlist, list_watchlist, remove_from_watchlist, save_note
 
 
 class WatchlistView(APIView):
@@ -22,3 +22,11 @@ class WatchlistDetailView(APIView):
     def delete(self, request, stock_symbol):
         remove_from_watchlist(request.user, stock_symbol.upper(), request)
         return Response(status=204)
+
+
+class StockNoteView(APIView):
+    def put(self, request, stock_symbol):
+        serializer = StockNoteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        note = save_note(request.user, stock_symbol.upper(), serializer.validated_data["note_text"], request)
+        return Response({"stock_symbol": stock_symbol.upper(), "note_text": note.note_text}, status=200)

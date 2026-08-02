@@ -5,7 +5,7 @@ from rest_framework.exceptions import ValidationError
 
 from config import settings
 
-from .models import WatchlistItem
+from .models import StockNote, WatchlistItem
 
 logger = logging.getLogger(__name__)
 
@@ -42,3 +42,17 @@ def remove_from_watchlist(user, stock_symbol, request):
         raise ValidationError("Stock not found in your watchlist.")
 
     logger.info(f"WATCHLIST_REMOVE | email={user.email} | ip={ip} | symbol={stock_symbol} | status=success")
+
+
+def save_note(user, stock_symbol, note_text, request):
+    ip = request.META.get("REMOTE_ADDR")
+    try:
+        item = WatchlistItem.objects.get(user=user, stock_symbol=stock_symbol)
+    except WatchlistItem.DoesNotExist:
+        logger.warning(f"NOTE_SAVE | email={user.email} | ip={ip} | symbol={stock_symbol} | status=failed | reason=not in watchlist")
+        raise ValidationError("Stock not found in your watchlist.")
+
+    note, created = StockNote.objects.update_or_create(watchlist_item=item, defaults={"note_text": note_text})
+    action = "created" if created else "updated"
+    logger.info(f"NOTE_SAVE | email={user.email} | ip={ip} | symbol={stock_symbol} | action={action} | status=success")
+    return note
