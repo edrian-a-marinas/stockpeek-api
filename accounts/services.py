@@ -1,12 +1,16 @@
 import logging
 
+from django.conf import settings
 from django.contrib.auth import authenticate
 from django.db import IntegrityError
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
 
 from accounts.models import User
+from config.cache import get_cache, set_cache
 
 logger = logging.getLogger(__name__)
+
+CACHE_TTL_AUTH = settings.CACHE_TTL_AUTH  # 30 days
 
 
 def register_user(validated_data, request):
@@ -33,7 +37,16 @@ def login_user(validated_data, request):
     if user is None:
         logger.warning(f"LOGIN | email={validated_data['email']} | ip={ip} | status=failed | reason=invalid credentials")
         raise AuthenticationFailed("Invalid email or password.")
-    logger.info(f"LOGIN | email={user.email} | ip={ip} | status=success")
+
+    cache_key = f"user:{user.id}"
+    cached_user = get_cache(cache_key)
+    if cached_user is None:
+        set_cache(cache_key, {"email": user.email, "first_name": user.first_name}, CACHE_TTL_AUTH)
+        source = "database"
+    else:
+        source = "cache"
+
+    logger.info(f"LOGIN | email={user.email} | ip={ip} | source={source} | status=success")
     return user
 
 

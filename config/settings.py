@@ -88,8 +88,13 @@ ASGI_APPLICATION = "config.asgi.application"
 
 DATABASES = {"default": dj_database_url.parse(os.getenv("DATABASE_URL"), conn_max_age=600)}
 
-
 AUTH_USER_MODEL = "accounts.User"
+
+# Rate limiting
+RATELIMIT_ENABLED = os.getenv("RATELIMIT_ENABLED", "True") == "True"
+RATELIMIT_USE_CACHE = "default"
+RATELIMIT_VIEW = "config.limiter.ratelimit_exceeded_handler"
+
 
 # Redis cache (used by django-ratelimit)
 CACHES = {
@@ -102,10 +107,12 @@ CACHES = {
     },
 }
 
-# Rate limiting
-RATELIMIT_ENABLED = os.getenv("RATELIMIT_ENABLED", "True") == "True"
-RATELIMIT_USE_CACHE = "default"
-RATELIMIT_VIEW = "config.limiter.ratelimit_exceeded_handler"
+
+# Redis Caching invalidation TTL.
+CACHE_TTL_DEFAULT = 60 * 60  # 1 hour
+
+CACHE_TTL_AUTH = 60 * 60 * 24 * 30  # 30 days — cache reset on password, status, role, or profile changes.
+
 
 # LOGGER CONFIG
 
