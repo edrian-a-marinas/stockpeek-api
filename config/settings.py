@@ -44,6 +44,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "rest_framework",
     "corsheaders",
+    # Local apps
+    "accounts",
+    "watchlist",
+    "stocks",
 ]
 
 MIDDLEWARE = [
@@ -80,8 +84,26 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {"default": dj_database_url.parse(os.getenv("DATABASE_URL"))}
+DATABASES = {"default": dj_database_url.parse(os.getenv("DATABASE_URL"), conn_max_age=600)}
 
+
+AUTH_USER_MODEL = "accounts.User"
+
+# LOGGER CONFIG
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
