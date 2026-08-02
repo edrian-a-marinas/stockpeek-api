@@ -103,6 +103,7 @@ CACHES = {
 # Rate limiting
 RATELIMIT_ENABLED = os.getenv("RATELIMIT_ENABLED", "True") == "True"
 RATELIMIT_USE_CACHE = "default"
+RATELIMIT_VIEW = "config.limiter.ratelimit_exceeded_handler"
 
 # LOGGER CONFIG
 
@@ -171,6 +172,7 @@ CORS_ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173").spl
 
 # Django REST Framework
 REST_FRAMEWORK = {
+    "EXCEPTION_HANDLER": "config.limiter.custom_exception_handler",
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.SessionAuthentication",
     ],
