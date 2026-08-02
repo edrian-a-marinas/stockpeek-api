@@ -35,3 +35,9 @@ def login_user(validated_data, request):
         raise AuthenticationFailed("Invalid email or password.")
     logger.info(f"LOGIN | email={user.email} | ip={ip} | status=success")
     return user
+
+
+def logout_user(request):
+    ip = request.META.get("REMOTE_ADDR")
+    email = request.user.email
+    logger.info(f"LOGOUT | email={email} | ip={ip} | status=success")

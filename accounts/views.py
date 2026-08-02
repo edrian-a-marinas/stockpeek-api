@@ -1,13 +1,13 @@
 from typing import ClassVar
 
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.utils.decorators import method_decorator
 from django_ratelimit.decorators import ratelimit
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .serializers import LoginSerializer, RegisterSerializer
-from .services import login_user, register_user
+from .services import login_user, logout_user, register_user
 
 
 class RegisterView(APIView):
@@ -31,3 +31,11 @@ class LoginView(APIView):
         user = login_user(serializer.validated_data, request)
         login(request, user)
         return Response({"email": user.email, "first_name": user.first_name}, status=200)
+
+
+class LogoutView(APIView):
+    @method_decorator(ratelimit(key="ip", rate="10/m", block=True))
+    def post(self, request):
+        logout_user(request)
+        logout(request)
+        return Response(status=204)
