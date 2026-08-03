@@ -17,22 +17,28 @@ import dj_database_url
 from dotenv import load_dotenv
 
 load_dotenv()
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# ----------------- .env loaded -----------------
+# Database
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
+# Application
+DEBUG = os.getenv("DEBUG", "False") == "True"
+RATELIMIT_ENABLED_ENV = os.getenv("RATELIMIT_ENABLED", "True") == "True"
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", "False") == "True"
+# Redis
+REDIS_URL = os.getenv("REDIS_URL")
+REDIS_CACHE_URL = os.getenv("REDIS_CACHE_URL")
 
+# External APIs
+TWELVE_DATA_API_KEY = os.getenv("TWELVE_DATA_API_KEY")
+
+# CORS
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173")
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
-
 
 # Application definition
 
@@ -86,12 +92,12 @@ ASGI_APPLICATION = "config.asgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {"default": dj_database_url.parse(os.getenv("DATABASE_URL"), conn_max_age=600)}
+DATABASES = {"default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)}
 
 AUTH_USER_MODEL = "accounts.User"
 
 # Rate limiting
-RATELIMIT_ENABLED = os.getenv("RATELIMIT_ENABLED", "True") == "True"
+RATELIMIT_ENABLED = RATELIMIT_ENABLED_ENV
 RATELIMIT_USE_CACHE = "default"
 RATELIMIT_VIEW = "config.limiter.ratelimit_exceeded_handler"
 
@@ -100,7 +106,7 @@ RATELIMIT_VIEW = "config.limiter.ratelimit_exceeded_handler"
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.getenv("REDIS_CACHE_URL"),
+        "LOCATION": REDIS_CACHE_URL,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
@@ -108,17 +114,16 @@ CACHES = {
 }
 
 
+# ----------------- Constants / hard coded -----------------
+
 # Redis Caching invalidation TTL.
 CACHE_TTL_DEFAULT = 60 * 60  # 1 hour
 
 CACHE_TTL_AUTH = 60 * 60 * 24 * 30  # 30 days — cache reset on password, status, role, or profile changes.
 
-# ----------------- Constants / hard coded -----------------
 MAX_WATCHLIST_ITEMS = 12
 
-
 # LOGGER CONFIG
-
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -188,7 +193,7 @@ USE_TZ = True
 
 
 # CORS
-CORS_ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173").split(",")
+CORS_ALLOWED_ORIGINS = ALLOWED_ORIGINS.split(",")
 
 # Django REST Framework
 REST_FRAMEWORK = {
