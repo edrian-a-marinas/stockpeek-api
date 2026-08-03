@@ -123,6 +123,8 @@ CACHE_TTL_AUTH = 60 * 60 * 24 * 30  # 30 days — cache reset on password, statu
 
 MAX_WATCHLIST_ITEMS = 12
 
+TWELVE_DATA_BASE_URL = "https://api.twelvedata.com"
+
 # LOGGER CONFIG
 LOGGING = {
     "version": 1,
