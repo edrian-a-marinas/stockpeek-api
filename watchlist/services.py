@@ -1,9 +1,8 @@
 import logging
 
+from django.conf import settings
 from django.db import IntegrityError
 from rest_framework.exceptions import ValidationError
-
-from config import settings
 
 from .models import StockNote, WatchlistItem
 
