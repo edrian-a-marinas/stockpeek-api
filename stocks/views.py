@@ -9,10 +9,10 @@ from .services import fetch_stock_price
 class StockPriceView(APIView):
     def get(self, request, stock_symbol):
         stock_symbol = stock_symbol.upper()
-        price = fetch_stock_price(stock_symbol)
+        result = fetch_stock_price(stock_symbol)
 
-        if price is None:
+        if result is None:
             raise NotFound(f"Price not found for {stock_symbol}.")
 
-        serializer = StockPriceSerializer({"stock_symbol": stock_symbol, "price": price})
+        serializer = StockPriceSerializer({"stock_symbol": stock_symbol, "price": result["price"], "last_updated": result["last_updated"]})
         return Response(serializer.data, status=200)
