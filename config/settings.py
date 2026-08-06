@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "django.contrib.staticfiles",
     "rest_framework",
     "corsheaders",
     # Local apps
@@ -196,6 +197,8 @@ USE_TZ = True
 
 # CORS
 CORS_ALLOWED_ORIGINS = ALLOWED_ORIGINS.split(",")
+
+STATIC_URL = "static/"
 
 # Django REST Framework
 REST_FRAMEWORK = {
