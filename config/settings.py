@@ -122,6 +122,8 @@ CACHE_TTL_DEFAULT = 60 * 60  # 1 hour
 
 CACHE_TTL_AUTH = 60 * 60 * 24 * 30  # 30 days — cache reset on password, status, role, or profile changes.
 
+CACHE_TTL_STOCK_PRICE = 90  # 1 minute, 30 seconds — free-tier API, avoid re-fetching too often
+
 MAX_WATCHLIST_ITEMS = 12
 
 TWELVE_DATA_BASE_URL = "https://api.twelvedata.com"
