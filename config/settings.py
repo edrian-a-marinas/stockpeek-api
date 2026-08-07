@@ -35,6 +35,7 @@ REDIS_CACHE_URL = os.getenv("REDIS_CACHE_URL")
 
 # External APIs
 TWELVE_DATA_API_KEY = os.getenv("TWELVE_DATA_API_KEY")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 # CORS
 ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173")
@@ -126,9 +127,11 @@ CACHE_TTL_AUTH = 60 * 60 * 24 * 30  # 30 days — cache reset on password, statu
 
 CACHE_TTL_STOCK_PRICE = 90  # 1 minute, 30 seconds — free-tier API, avoid re-fetching too often
 
+INSIGHT_STALE_DAYS = 15  # long_term_relevance & risks regenerate after this many days; company_overview never changes
+
 # External Apis
 TWELVE_DATA_BASE_URL = "https://api.twelvedata.com"
-
+GROQ_MODEL = "llama-3.3-70b-versatile"
 
 # Celery
 CELERY_BROKER_URL = REDIS_URL
