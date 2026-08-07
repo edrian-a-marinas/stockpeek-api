@@ -4,6 +4,8 @@ from django.conf import settings
 from django.db import IntegrityError
 from rest_framework.exceptions import ValidationError
 
+from stocks.tasks import generate_insight_for_stock
+
 from .models import StockNote, WatchlistItem
 
 logger = logging.getLogger(__name__)
@@ -26,6 +28,9 @@ def add_to_watchlist(user, stock_symbol, request):
     try:
         item = WatchlistItem.objects.create(user=user, stock_symbol=stock_symbol)
         logger.info(f"WATCHLIST_ADD | email={user.email} | ip={ip} | symbol={stock_symbol} | status=success")
+
+        generate_insight_for_stock.delay(stock_symbol)
+
         return item
     except IntegrityError:
         logger.warning(f"WATCHLIST_ADD | email={user.email} | ip={ip} | symbol={stock_symbol} | status=failed | reason=already in watchlist")
