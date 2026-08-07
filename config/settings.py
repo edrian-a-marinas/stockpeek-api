@@ -116,6 +116,8 @@ CACHES = {
 
 
 # ----------------- Constants / hard coded -----------------
+MAX_WATCHLIST_ITEMS = 12
+
 
 # Redis Caching invalidation TTL.
 CACHE_TTL_DEFAULT = 60 * 60  # 1 hour
@@ -124,9 +126,19 @@ CACHE_TTL_AUTH = 60 * 60 * 24 * 30  # 30 days — cache reset on password, statu
 
 CACHE_TTL_STOCK_PRICE = 90  # 1 minute, 30 seconds — free-tier API, avoid re-fetching too often
 
-MAX_WATCHLIST_ITEMS = 12
-
+# External Apis
 TWELVE_DATA_BASE_URL = "https://api.twelvedata.com"
+
+
+# Celery
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = REDIS_URL
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TIMEZONE = "UTC"
+CELERY_ENABLE_UTC = True
+
 
 # LOGGER CONFIG
 LOGGING = {
