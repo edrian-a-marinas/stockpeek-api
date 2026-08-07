@@ -9,13 +9,14 @@ from config.cache import get_cache, set_cache
 logger = logging.getLogger(__name__)
 
 
-def fetch_stock_price(stock_symbol):
+def fetch_stock_price(stock_symbol, force=False):
     cache_key = f"stock_price:{stock_symbol}"
-    cached = get_cache(cache_key)
-    if cached is not None:
-        logger.info(f"STOCK_FETCH | symbol={stock_symbol} | price={cached['price']} | source=cache | status=success")
-        return cached
 
+    if not force:
+        cached = get_cache(cache_key)
+        if cached is not None:
+            logger.info(f"STOCK_FETCH | symbol={stock_symbol} | price={cached['price']} | source=cache | status=success")
+            return cached
     try:
         response = requests.get(
             f"{settings.TWELVE_DATA_BASE_URL}/price",
