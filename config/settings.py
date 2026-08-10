@@ -129,6 +129,8 @@ CACHE_TTL_STOCK_PRICE = 90  # 1 minute, 30 seconds — free-tier API, avoid re-f
 
 INSIGHT_STALE_DAYS = 15  # long_term_relevance & risks regenerate after this many days; company_overview never changes
 
+INSIGHT_REFRESH_INTERVAL = 60 * 60 * 24  # check once daily for stale insights
+
 # External Apis
 TWELVE_DATA_BASE_URL = "https://api.twelvedata.com"
 GROQ_MODEL = "llama-3.3-70b-versatile"

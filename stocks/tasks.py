@@ -1,6 +1,9 @@
 import logging
+from datetime import timedelta
 
 from celery import shared_task
+from django.conf import settings
+from django.utils import timezone
 
 from watchlist.models import WatchlistItem
 
@@ -27,9 +30,13 @@ def refresh_watchlisted_stock_prices():
 
 @shared_task
 def generate_insight_for_stock(stock_symbol):
-    if StockInsight.objects.filter(stock_symbol=stock_symbol).exists():
-        logger.info(f"INSIGHT_GENERATE | symbol={stock_symbol} | status=skipped | reason=already exists")
-        return
+    existing = StockInsight.objects.filter(stock_symbol=stock_symbol).first()
+
+    if existing:
+        stale_cutoff = timezone.now() - timedelta(days=settings.INSIGHT_STALE_DAYS)
+        if existing.generated_at > stale_cutoff:
+            logger.info(f"INSIGHT_GENERATE | symbol={stock_symbol} | status=skipped | reason=not stale yet")
+            return
 
     content = generate_insight_text(stock_symbol)
     if content is None:
@@ -38,10 +45,24 @@ def generate_insight_for_stock(stock_symbol):
 
     sections = parse_insight_sections(content)
 
-    StockInsight.objects.create(
-        stock_symbol=stock_symbol,
-        company_overview=sections["overview"],
-        long_term_relevance=sections["relevance"],
-        risks=sections["risks"],
-    )
-    logger.info(f"INSIGHT_GENERATE | symbol={stock_symbol} | status=success")
+    if existing:
+        existing.long_term_relevance = sections["relevance"]
+        existing.risks = sections["risks"]
+        existing.save()
+        logger.info(f"INSIGHT_GENERATE | symbol={stock_symbol} | status=success | action=refreshed")
+    else:
+        StockInsight.objects.create(
+            stock_symbol=stock_symbol,
+            company_overview=sections["overview"],
+            long_term_relevance=sections["relevance"],
+            risks=sections["risks"],
+        )
+        logger.info(f"INSIGHT_GENERATE | symbol={stock_symbol} | status=success | action=created")
+
+
+@shared_task
+def refresh_stale_insights():
+    symbols = StockInsight.objects.values_list("stock_symbol", flat=True)
+
+    for symbol in symbols:
+        generate_insight_for_stock(symbol)
