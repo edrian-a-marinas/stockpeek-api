@@ -23,6 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ----------------- .env loaded -----------------
 # Database
 DATABASE_URL = os.getenv("DATABASE_URL")
+MONGO_URL = os.getenv("MONGO_URL")
 
 # Application
 DEBUG = os.getenv("DEBUG", "False") == "True"
@@ -42,7 +43,6 @@ ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173")
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 # Application definition
-
 INSTALLED_APPS = [
     "daphne",
     "django.contrib.admin",
