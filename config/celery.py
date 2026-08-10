@@ -14,4 +14,8 @@ app.conf.beat_schedule = {
         "task": "stocks.tasks.refresh_watchlisted_stock_prices",
         "schedule": settings.CACHE_TTL_STOCK_PRICE,
     },
+    "refresh-stale-insights": {
+        "task": "stocks.tasks.refresh_stale_insights",
+        "schedule": settings.INSIGHT_REFRESH_INTERVAL,
+    },
 }
