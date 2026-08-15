@@ -6,6 +6,7 @@ from rest_framework.exceptions import ValidationError
 
 from stocks.tasks import generate_insight_for_stock
 
+from .activity import log_activity
 from .models import StockNote, WatchlistItem
 
 logger = logging.getLogger(__name__)
@@ -30,6 +31,7 @@ def add_to_watchlist(user, stock_symbol, request):
         logger.info(f"WATCHLIST_ADD | email={user.email} | ip={ip} | symbol={stock_symbol} | status=success")
 
         generate_insight_for_stock.delay(stock_symbol)
+        log_activity(user.id, user.email, "watchlist_add", stock_symbol)
 
         return item
     except IntegrityError:
@@ -46,6 +48,7 @@ def remove_from_watchlist(user, stock_symbol, request):
         raise ValidationError("Stock not found in your watchlist.")
 
     logger.info(f"WATCHLIST_REMOVE | email={user.email} | ip={ip} | symbol={stock_symbol} | status=success")
+    log_activity(user.id, user.email, "watchlist_remove", stock_symbol)
 
 
 def save_note(user, stock_symbol, note_text, request):
