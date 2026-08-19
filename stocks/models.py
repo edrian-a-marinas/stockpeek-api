@@ -10,6 +10,18 @@ class StockPrice(models.Model):
         return f"{self.stock_symbol}: {self.current_price}"
 
 
+class StockPriceHistory(models.Model):
+    stock_symbol = models.CharField(max_length=10)
+    price = models.DecimalField(max_digits=12, decimal_places=2)
+    recorded_at = models.DateField()
+
+    class Meta:
+        unique_together = ("stock_symbol", "recorded_at")
+
+    def __str__(self):
+        return f"{self.stock_symbol} @ {self.recorded_at}: {self.price}"
+
+
 class StockInsight(models.Model):
     stock_symbol = models.CharField(max_length=10, unique=True)
     company_overview = models.TextField()
