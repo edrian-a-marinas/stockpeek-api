@@ -18,4 +18,12 @@ app.conf.beat_schedule = {
         "task": "stocks.tasks.refresh_stale_insights",
         "schedule": settings.INSIGHT_REFRESH_INTERVAL,
     },
+    "record-daily-stock-price-snapshot": {
+        "task": "stocks.tasks.record_daily_stock_price_snapshot",
+        "schedule": settings.PRICE_SNAPSHOT_INTERVAL,
+    },
+    "detect-monthly-drops": {
+        "task": "stocks.tasks.detect_monthly_drops",
+        "schedule": settings.PRICE_SNAPSHOT_INTERVAL,
+    },
 }
