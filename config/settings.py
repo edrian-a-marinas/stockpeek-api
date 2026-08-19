@@ -139,7 +139,10 @@ CACHE_TTL_STOCK_PRICE = 90  # 1 minute, 30 seconds — free-tier API, avoid re-f
 
 INSIGHT_STALE_DAYS = 15  # long_term_relevance & risks regenerate after this many days; company_overview never changes
 
+# Celery beats
 INSIGHT_REFRESH_INTERVAL = 60 * 60 * 24  # check once daily for stale insights
+PRICE_SNAPSHOT_INTERVAL = 60 * 60 * 24  # record one daily price snapshot per watchlisted stock
+MONTHLY_DROP_THRESHOLD_PERCENT = 10  # trigger drop_alert if price falls this % or more over ~30 days
 
 # External Apis
 TWELVE_DATA_BASE_URL = "https://api.twelvedata.com"
