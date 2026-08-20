@@ -20,9 +20,9 @@ def register_user(validated_data, request):
             email=validated_data["email"],
             password=validated_data["password"],
             first_name=validated_data["first_name"],
-            middle_name=validated_data.get("middle_name"),
+            middle_name=validated_data.get("middle_name", ""),
             last_name=validated_data["last_name"],
-            phone_number=validated_data.get("phone_number"),
+            phone_number=validated_data.get("phone_number", ""),
         )
         logger.info(f"REGISTER | email={user.email} | ip={ip} | status=success")
         return user
