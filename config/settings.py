@@ -23,6 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ----------------- .env loaded -----------------
 # Database
 DATABASE_URL = os.getenv("DATABASE_URL")
+TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL")
 MONGO_URL = os.getenv("MONGO_URL")
 
 # Application
@@ -105,6 +106,7 @@ CHANNEL_LAYERS = {
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {"default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)}
+DATABASES["default"]["TEST"] = {"NAME": dj_database_url.parse(TEST_DATABASE_URL)["NAME"]}
 
 AUTH_USER_MODEL = "accounts.User"
 
